@@ -1,16 +1,20 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <b-navbar type="dark" variant="success" class="d-flex justify-content-center">
+      <b-navbar-brand href="#">Trello</b-navbar-brand>
+    </b-navbar>
+    
+    <BoardHolder/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import BoardHolder from './components/BoardHolder.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    BoardHolder
   }
 }
 </script>
@@ -22,6 +26,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+
+
 </style>
