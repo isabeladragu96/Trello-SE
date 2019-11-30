@@ -1,9 +1,11 @@
 <template>
   <div class="row">
-    <Board @deleteBoard = "onBoardDelete"
+    <Board @deleteBoard = "onBoardDelete" @saveBoard = "onBoardSave"
     v-for="board in boards"
     :key="board._id"
     :board="board"
+    />
+    <NewBoard @addBoard = "onAddBoard" 
     />
   </div>
 </template>
@@ -11,6 +13,7 @@
 <script>
 import axios from "axios";
 import Board from "./Board.vue";
+import NewBoard from "./NewBoard.vue";
 
 export default {
   name: 'BoardHolder',
@@ -30,7 +33,7 @@ export default {
       });
   }, 
   components: {
-    Board
+    Board, NewBoard
   },
   methods: {
     onBoardDelete: function(id) {
@@ -40,6 +43,22 @@ export default {
           this.boards = this.boards.filter(function(board) {
             return board._id != res.data._id;
           });
+        })
+        .catch(err => {
+          this.err = err;
+        });
+    },
+    onAddBoard: function(newBoard) {
+      this.boards.push(newBoard)
+    },
+    onBoardSave: function(id, newBoardName) {
+      axios
+        .put("http://localhost:3000/boards/" + id, {
+          newBoardName: newBoardName
+        })
+        .then(res => {
+          const board_index = this.boards.findIndex(board => board._id === id);
+          this.boards[board_index].board_name = res.data.new_board_name;
         })
         .catch(err => {
           this.err = err;

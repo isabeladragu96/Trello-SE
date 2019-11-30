@@ -3,6 +3,7 @@ const app = express()
 const path = require('path')
 const mongodb = require('mongodb')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
 mongodb.MongoClient.connect('mongodb://localhost:27017/trello', (err, client) => {
   if (err) return console.log(err)
@@ -13,7 +14,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/trello', (err, client) =>
   })
 })
 
-app.use([cors(), express.static(path.join(__dirname + '/vue/dist/'))])
+app.use([cors(), bodyParser(), express.static(path.join(__dirname + '/vue/dist/'))])
 
 app.get('/boards', function (req, res) {
    db.collection('boards').find().toArray((err, result) => {
@@ -34,6 +35,34 @@ app.delete("/boards/:id", function(req, res) {
 
       res.send({
         _id: req.params.id
+      });
+    }
+  );
+});
+
+app.post("/boards", function(req, res) {
+  db.collection("boards").insert(
+    { board_name: req.body.newBoardName, cards: [] },
+    function(err, obj) {
+      if (err) return console.log(err);
+
+      res.send({
+        board: obj.ops[0]
+      });
+    }
+  );
+});
+
+app.put("/boards/:id", function(req, res) {
+  console.log(req.params.id, req.body.newBoardName)
+  db.collection("boards").update(
+    { _id: new mongodb.ObjectID(req.params.id) },
+    { $set: { board_name: req.body.newBoardName } },
+    function(err, obj) {
+      if (err) return console.log(err);
+
+      res.send({
+        new_board_name: req.body.newBoardName
       });
     }
   );

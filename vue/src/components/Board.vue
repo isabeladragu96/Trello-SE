@@ -15,9 +15,9 @@
     <b-modal :id="'modal-' + board._id" :title="board.board_name + ' settings'" hide-footer>
       <div class="text-center">
         <b-input-group prepend="Edit board's name" class="my-3">
-          <b-form-input></b-form-input>
+          <b-form-input :value="board.board_name" @input="updateNewBoardName"></b-form-input>
           <b-input-group-append>
-            <b-button variant="dark">Save</b-button>
+            <b-button variant="dark" @click="saveBoard(board._id, newBoardName)">Save</b-button>
           </b-input-group-append>
         </b-input-group>
         <b-button variant="warning" @click="deleteBoard(board._id)">Delete</b-button>
@@ -35,6 +35,17 @@ export default {
   methods: {
     deleteBoard: function(board_id) {
       this.$emit("deleteBoard", board_id)
+    },
+    updateNewBoardName: function(value) {
+      this.newBoardName = value
+    },
+    saveBoard: function(id, newBoardName) {
+      this.$emit("saveBoard", id, newBoardName)
+    }
+  },
+  data: function() {
+    return {
+      newBoardName: ""
     }
   }
 }
